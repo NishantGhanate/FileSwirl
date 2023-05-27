@@ -17,12 +17,11 @@ class FileDate:
     month: str
     day: str
 
-    def __init__(self, year, month, day):
-        self.year = year.strip()
-        self.month = month.strip()
-        self.day = day.strip()
-
 class FileSort:
+
+    def __init__(self) -> None:
+        self.total_counter = 0
+        self.files_tracked = {}
 
     def is_valid_date(self, year, month, day):
         try:
@@ -79,13 +78,14 @@ class FileSort:
                     )
                 return None
         except Exception as e:
-            print('')
+            print(f'Error {e} tried to read = {file_path}')
             return None
 
 
     def sort_images(self, input_folder, output_folder, file_extensions):
         processed = 0
         duplicate = 0
+        
         print(f'\n\nCurently processing : {input_folder}\n')
         for file_path in input_folder.rglob("*"):
             if file_path.is_file() and file_path.suffix.lower() in file_extensions:
@@ -110,6 +110,7 @@ class FileSort:
                 if not os.path.exists(new_file_path):
                     shutil.copy2(str(file_path), str(output_subfolder))
                     processed += 1
+                    self.total_counter += 1
                     print(f"""
                     \rFile name= {file_path.parts[-1]},
                     \rdate = {creation_date},
@@ -123,8 +124,17 @@ class FileSort:
                     \rdate = {creation_date},
                     \rduplicate= {duplicate}
                     """, end="\r")
+        
+        self.files_tracked[str(input_folder)] = {
+            'processed' : processed,
+            'duplicate' : duplicate
+        }
                 
-                     
+
+    def print_result(self):
+        print(f"\n{'#'*15} Processing Completed {'#'*15}")
+        print(self.files_tracked)
+
     def process_files(self, input_folders, output_folder):
         output_path = Path(output_folder)
         file_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.heic', '.mp4', '.mov')
@@ -136,6 +146,8 @@ class FileSort:
                 output_folder= output_path,
                 file_extensions= file_extensions
             )
+        
+        self.print_result()
 
 
 if __name__ == "__main__":
