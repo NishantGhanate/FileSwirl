@@ -1,4 +1,4 @@
-regex.py
+/tests
 .env
 __pycache__
 *.pyc
