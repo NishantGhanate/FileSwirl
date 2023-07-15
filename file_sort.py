@@ -95,6 +95,7 @@ class FileSort:
             print(f'Error {e} tried to read = {file_path}')
             return None
 
+
     def get_metadata(self, input_file_path):
         """
         Extract file meta data through exiftool
@@ -159,7 +160,7 @@ class FileSort:
                     self.total_counter += 1
                     print(f"""
                     \rFile name= {file_path.parts[-1]},
-                    \rdate = {creation_date},
+                    \rdate= {creation_date},
                     \rprocessed= {processed}
                     """,
                     end='\r')
@@ -167,7 +168,7 @@ class FileSort:
                     duplicate += 1
                     print(f"""
                     \rFile name= {file_path.parts[-1]},
-                    \rdate = {creation_date},
+                    \rdate= {creation_date},
                     \rduplicate= {duplicate}
                     """, end="\r")
                 
@@ -190,8 +191,7 @@ class FileSort:
         self.print_result()
 
 
-if __name__ == "__main__":
-    
+def main():
     parser = argparse.ArgumentParser(description='Media file sorting')
 
     # Add the input & output path argument
@@ -222,3 +222,6 @@ if __name__ == "__main__":
     end_time = time.time()
     runtime = end_time - start_time
     print("\n\nRuntime: {:.2f} seconds".format(runtime))
+
+if __name__ == "__main__":
+    main()
