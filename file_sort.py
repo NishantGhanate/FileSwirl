@@ -18,6 +18,11 @@ class FileDate:
     month: str
     day: str
 
+FILE_EXTENSIONS = (
+    '.jpg', '.jpeg', '.png', '.tiff', '.gif', '.heic', '.mp4', '.mov',
+    '.mp3', '.mpg', '.avi', '.wmv', '.webm', '.mvk', '.3gp', '.mts'
+)
+
 class ShiftType(Enum):
     COPY = 'copy'
     MOVE = 'move'
@@ -25,7 +30,7 @@ class ShiftType(Enum):
 
 class FileSort:
 
-    def __init__(self, output_folder, shift_type= ShiftType.COPY) -> None:
+    def __init__(self, output_folder, shift_type= ShiftType.COPY, file_extensions= FILE_EXTENSIONS) -> None:
         self.total_counter = 0
         self.files_tracked = {}
         self.output_folder =  Path(output_folder)
@@ -34,7 +39,7 @@ class FileSort:
         else:
             self.shift_type = shutil.move
         
-        self.file_extensions = ('.jpg', '.jpeg', '.png', '.gif', '.heic', '.mp4', '.mov')
+        self.file_extensions = file_extensions
 
 
     def is_valid_date(self, year, month, day):
@@ -207,6 +212,11 @@ def main():
         '--shift_type', type=str, choices=[e.value for e in ShiftType],
         default=ShiftType.COPY.value, help='Path to the output file'
     )
+    parser.add_argument(
+        '--file_extensions', nargs='+',
+        help='Select given file extensions, will override existing extensions'
+    )
+    
 
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -216,7 +226,11 @@ def main():
     start_time = time.time()
 
     # Call the process_file function with the provided paths
-    file_sort = FileSort(output_folder=args.output_path, shift_type= args.shift_type)
+    file_sort = FileSort(
+        output_folder=args.output_path,
+        shift_type= args.shift_type,
+        file_extensions= args.file_extensions
+    )
     file_sort.process_files(args.input_paths)
 
     end_time = time.time()
