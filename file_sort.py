@@ -3,6 +3,7 @@ import os
 import re
 import time
 import json
+import math
 import shutil
 import exifread
 import subprocess
@@ -30,16 +31,18 @@ class ShiftType(Enum):
 
 class FileSort:
 
-    def __init__(self, output_folder, shift_type= ShiftType.COPY, file_extensions= FILE_EXTENSIONS) -> None:
+    def __init__(self, output_folder, input_folders, file_extensions, shift_type= ShiftType.COPY, ) -> None:
         self.total_counter = 0
         self.files_tracked = {}
         self.output_folder =  Path(output_folder)
+        self.input_folders = input_folders
         if shift_type == ShiftType.COPY.value:
             self.shift_type = shutil.copy2
         else:
             self.shift_type = shutil.move
         
         self.file_extensions = file_extensions
+        self.total_files_size = 0
 
 
     def is_valid_date(self, year, month, day):
@@ -163,6 +166,7 @@ class FileSort:
                     self.shift_type(str(file_path), str(output_subfolder))
                     processed += 1
                     self.total_counter += 1
+                    self.total_files_size += os.path.getsize(new_file_path)
                     print(f"""
                     \rFile name= {file_path.parts[-1]},
                     \rdate= {creation_date},
@@ -177,20 +181,31 @@ class FileSort:
                     \rduplicate= {duplicate}
                     """, end="\r")
                 
-        
+        size_bytes = self.convert_size(self.total_files_size)
         self.files_tracked[str(input_folder)] = {
             'processed' : processed,
-            'duplicate' : duplicate
+            'duplicate' : duplicate,
+            'total_files_size' : size_bytes
         }
-                
+        
+
+    def convert_size(self, size_bytes):
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return "%s %s" % (s, size_name[i])
+
 
     def print_result(self):
         print(f"\n{'#'*15} Processing Completed {'#'*15}")
         print(self.files_tracked)
 
 
-    def process_files(self, input_folders):
-        for input_folder in input_folders:
+    def process_files(self):
+        for input_folder in self.input_folders:
             self.sort_files(input_folder= Path(input_folder))
         
         self.print_result()
@@ -213,7 +228,7 @@ def main():
         default=ShiftType.COPY.value, help='Path to the output file'
     )
     parser.add_argument(
-        '--file_extensions', nargs='+',
+        '--file_extensions', nargs='+', type=str, default=FILE_EXTENSIONS,
         help='Select given file extensions, will override existing extensions'
     )
     
@@ -224,14 +239,16 @@ def main():
     output_path_check.mkdir(parents=True, exist_ok=True)
 
     start_time = time.time()
-
+    
     # Call the process_file function with the provided paths
     file_sort = FileSort(
+        input_folders=args.input_paths,
         output_folder=args.output_path,
         shift_type= args.shift_type,
         file_extensions= args.file_extensions
     )
-    file_sort.process_files(args.input_paths)
+    
+    file_sort.process_files()
 
     end_time = time.time()
     runtime = end_time - start_time
