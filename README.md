@@ -20,7 +20,7 @@ Now sort your media files with just one command.
 ## To build project locally
 ```
 
-- pip install .
+- python -m pip install .
 
 ```
 
@@ -59,6 +59,11 @@ meta data via python:
 > python media_metadata.py --input_path "E:\20\VID_24921005_231526_366.mp4"
 ```
 
+### Supported file extenions
+```
+'.jpg', '.jpeg', '.png', '.tiff', '.gif', '.heic', '.mp4', '.mov',
+'.mp3', '.mpg', '.avi', '.wmv', '.webm', '.mvk', '.3gp', '.mts'
+```
 
 ### For android on windwos (wip)
 

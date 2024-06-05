@@ -67,7 +67,7 @@ class FileSort:
         filename = file_path.parts[-1]
         regex_file_name_patterns = {
             r"(IMG[_-]|IMG|PXL_)?(\d{4})(\d{2})(\d{2}).*?\.(jpg|jpeg|png|gif|heic|mov)" : (2,3,4),
-            r"(VIDEO_|VID_|PXL_)?(\d{4})(\d{2})(\d{2}).*?\.(mp4|mov)" : (2,3,4),
+            r"(VIDEO_|VID_|PXL_)?(\d{4})(\d{2})(\d{2}).*?\.(mp4|mov|mvk|avi|3gp|mts)" : (2,3,4),
         }
 
         for pattern, group_indexs in regex_file_name_patterns.items():
@@ -111,7 +111,7 @@ class FileSort:
         command = ['exiftool', '-json', input_file_path]
         result = subprocess.run(command, capture_output=True, text=True)
 
-        if result.returncode == 0:
+        if result.stdout and result.returncode == 0:
             # Parse the JSON output
             metadata = json.loads(result.stdout)
 
@@ -141,7 +141,9 @@ class FileSort:
         duplicate = 0
         
         print(f'\n\nCurently processing : {input_folder}\n')
-        for file_path in input_folder.rglob("*"):
+        
+        for file_path in input_folder.rglob("**/*"):
+            
             if file_path.is_file() and file_path.suffix.lower() in self.file_extensions:
                 creation_date = (
                     self.get_metadata(file_path) or
@@ -149,6 +151,10 @@ class FileSort:
                     self.get_file_name_date(file_path) or
                     self.get_file_creation_date(file_path)
                 )
+                
+                if not creation_date:
+                    print(f"Skipping file unable to extract date: {file_path}")
+                    continue
                 
                 sub_path = "{year}{sep}{month}{sep}{day}".format(
                     year=creation_date.year,
