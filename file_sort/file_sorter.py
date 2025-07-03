@@ -45,6 +45,9 @@ class FileSorter:
         else:
             self.shift_type = shutil.move
 
+        if not isinstance(file_extensions, set):
+            file_extensions = set(file_extensions)
+
         self.file_extensions = file_extensions
         self.location = location
         self.nested_order = nested_order

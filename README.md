@@ -7,7 +7,6 @@ Now sort your files with just one command.
 - Sort by Date (format YYYY/MM/DD)
 - Sort by File Extension
 - Sort by File Extension by Group
-- Sory by Location by given radius
 - Sort by Make
 - Sort by Model
 
@@ -20,16 +19,25 @@ e.g Sort only `.mp4` files from `source` dir into `des` dir
 - `Python3.10+`
 - `ExifTool`
 
+### Tested platform
+```
+- Windows 11 x64
+```
+
 ### Project setup
 ```
-- git clone <project_url>
-- cd <folder_name>
+- git clone https://github.com/NishantGhanate/FileSort.git
+- cd FileSort
 - python -m venv venv
-- [Win] > venv\Scripts\activate | [Linux] $ venv/bin/activate
+- [Win] > venv\Scripts\activate
+- [Linux] $ venv/bin/activate
 - pip install -r requriments.txt
+```
 
-- Download & Install https://exiftool.org/
-- For Windows Installer https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
+### Download this tool
+```
+- Download & Install: https://exiftool.org/
+- For Windows Installer: https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
 ```
 
 ## To install project locally
@@ -42,26 +50,41 @@ For final build testing
 ```
 
 
-# To build project locally
+## To build project locally
 ```
 > python -m build
 > pip install dist/file_sort-0.0.10-py3-none-any.whl
 ```
 
-## HELP
+### HELP
 ```
 > python -m file_sort.cli -h
 ```
 
-### Run project
-Default:
+### Run cli: Default command
 ```
 > python -m file_sort.cli --input_paths "E:\\src" --output_path "E:\\dest"
-
-> python -m file_sort.cli --input_paths "E:\\src" --output_path "E:\\dest" --nested_order model
 ```
 
-Extra Arguments:
+### Defaults Args for cli
+```
+--shift_type copy
+--nested_order date
+--process_type linear
+--file_extensions "{pre-defined inside constants}"
+```
+
+#### Args and its values
+```
+--shift_type : copy | move
+--nested_order : alphabet date file_extension file_extension_group make model
+--process_type : linear | parallel
+--file_extensions "{pre-defined inside constants all basic formats}"
+```
+
+
+
+### With Extra Arguments:
 ```
 python -m file_sort.cli --input_paths "E:\\src" --output_path "E:\\dest" --shift_type "move"
 
