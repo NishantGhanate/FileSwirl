@@ -1,10 +1,17 @@
-import json
+"""
+command:
+    > python media_metadata.py --input_path  E:\\src\\IMG_4267.HEIC
+    python media_metadata.py --input_path E:\\src\\IMG20250406135334.jpg
+"""
+
 import argparse
+import json
 import subprocess
 from pathlib import Path
 
+
 def get_metadata(input_file_path, output_file_path):
-    
+
     """
     Extract file meta data through exiftool and saves it into json
     """
@@ -12,7 +19,7 @@ def get_metadata(input_file_path, output_file_path):
 
     command = ['exiftool', '-json', input_file_path]
     result = subprocess.run(command, capture_output=True, text=True)
-    
+
     if result.returncode == 0:
         # Parse the JSON output
         metadata = json.loads(result.stdout)
@@ -21,11 +28,17 @@ def get_metadata(input_file_path, output_file_path):
         taken_date = metadata[0].get('DateTimeOriginal') or\
             metadata[0].get('SubSecDateTimeOriginal') or\
             metadata[0].get('MediaCreateDate')
-        
+
+        lat = metadata[0].get("GPSLatitude")
+        lon = metadata[0].get("GPSLongitude")
+        make = metadata[0].get("Make")
+        model = metadata[0].get("Model")
         print("Taken Date:", taken_date)
-        print("Meta data : ", metadata)
-       
-        with open(output_file_path, mode='w') as f:
+        print("GPS Data: {lat} | {lon}", )
+        print(f"Make:{make} model: {model} ")
+
+
+        with open(output_file_path, mode='w', encoding='utf-8') as f:
             json_data = json.dumps(metadata, indent=4)
             f.write(json_data)
 
@@ -57,4 +70,3 @@ if __name__ == "__main__":
     else:
         print("Path does not exist:", input_path)
 
-    

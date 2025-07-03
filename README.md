@@ -1,77 +1,142 @@
-# File sort
+# 📁 File sort
 
-Now sort your media files with just one command.
+Now sort your files with just one command.
+Organize photos, videos, documents, and more — cleanly and efficiently — using flexible sorting rules.
+
+
+## ✨ Sorting Features
+- 📅 Sort by Date — Organize files into folders by creation or modified date.
+- 🧩 Filter by File Extension — Group files like .jpg, .mp4, .pdf, etc
+- 🏷️ Sort by Camera Make (EXIF.make) — Useful for photographers to group by device brand.
+- 🔍 Sort by File Type (MIME) — Organize images, videos, documents, etc.
+- 🗂️ Nested Sorting — Apply multi-level sort: e.g., Date → Extension → Make.
+- ⚙️ Custom Sort Key Chains — Chain any supported keys in any order.
+- 🎛️ Parallel Processing Support — Fast sorting using multi-threading.
+
+
+
+Also supports to arranges file in nested folder structure like `Output/Data/Make/Model` for all the options mentioned above.
+
+This scripts lets you filter out specific file extensions while sorting.
+e.g Sort only `.mp4` files from `source` dir into `destination` dir
 
 ### System requriments.
-- `Python3.10`
+- `Python3.10+`
 - `ExifTool`
+
+### ✅ Supports
+- Windows 11 x64
 
 
 ### Project setup
 ```
-- git clone <project_url>
-- cd <folder_name>
+- git clone https://github.com/NishantGhanate/FileSort.git
+- cd FileSort
+- python -m venv venv
+- [Win] > venv\Scripts\activate
+- [Linux] $ venv/bin/activate
 - pip install -r requriments.txt
-
-- Download & Install https://exiftool.org/
-- For Windows Installer https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
 ```
+
+### Download this tool
+```
+- Download & Install: https://exiftool.org/
+- For Windows Installer: https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
+```
+
+## To install project locally
+```bash
+For development
+> pip install -e .
+
+For final build testing
+> python -m pip install .
+```
+
 
 ## To build project locally
+```bash
+> python -m build
+> pip install dist/file_sort-0.0.10-py3-none-any.whl
 ```
 
-- python -m pip install .
-
+### HELP
+```bash
+> python -m file_sort.cli -h
 ```
 
-### Run project 
-```
-> python -m file_sort -h
-    --input_paths can take multiple file paths 
-    --out_path takes only one path
-
-> python -m file_sort --input_paths "E:\temp" --output_path "E:\Memories"
-
-> python -m file_sort --input_paths "E:\temp" "E:\GoogleDrive" "E:\DCIM" --output_path "E:\Memories"
-
-> python -m file_sort --input_paths "E:\temp" --output_path "E:\Memories" --shift_type "move"
-
-- shift_type options : 
-    + move
-    + copy 
-
+### Run cli: default command
+```bash
+> python -m file_sort.cli --input_paths "E:\\src" --output_path "E:\\dest"
 ```
 
-### To test out file meta data
+### Defaults Args for cli
+```bash
+--shift_type copy
+--nested_order date
+--process_type linear
+--file_extensions "{pre-defined inside constants}"
 ```
 
-Open Cmd and check if tool is installed correctly 
-
-> exiftool -h
-
-meta data via Command prompt:
-> exiftool -json E:\Memories\2022\09\25\IMG_1911.HEIC
-
-meta data via python:
-> python media_metadata.py --input_path "E:\IMG_1911.HEIC"
-> python media_metadata.py --input_path "E:\IMG_1825.MOV" 
-> python media_metadata.py --input_path "E:\temp_.jpg"
-> python media_metadata.py --input_path "E:\20\VID_24921005_231526_366.mp4"
+#### Args and its values
+```bash
+--shift_type : copy | move
+--nested_order : alphabet date file_extension file_extension_group make model
+--process_type : linear | parallel
+--file_extensions "{pre-defined inside constants all basic formats}"
 ```
 
-### Supported file extenions
+### Examples:
+
+🔁 Move files from a source to a destination
+```bash
+python -m file_sort.cli \
+  --input_paths "E:\\src" \
+  --output_path "E:\\dest" \
+  --shift_type "move"
 ```
-'.jpg', '.jpeg', '.png', '.tiff', '.gif', '.heic', '.mp4', '.mov',
-'.mp3', '.mpg', '.avi', '.wmv', '.webm', '.mvk', '.3gp', '.mts'
+
+🗃️ Move files and organize by nested folders: date file_extension
+```bash
+python -m file_sort.cli \
+  --input_paths "E:\\src" \
+  --output_path "E:\\dest" \
+  --shift_type "move" \
+  --nested_order date file_extension
 ```
 
-### For android on windwos (wip)
+🏷️ Organize files by camera make/brand
+```bash
+python -m file_sort.cli \
+  --input_paths "E:\\src" \
+  --output_path "E:\\dest" \
+  --nested_order make
+```
 
-> adb devices
-> adb shell
-> cd sdcard/dcim
-> exit
+⚡ Copy from multiple folders in parallel mode
+```bash
+python -m file_sort.cli \
+  --input_paths "E:\\src" "E:\\DCIM" \
+  --output_path "E:\\dest" \
+  --shift_type "copy" \
+  --process_type "parallel
+```
 
-adb pull /sdcard/dcim E:\temp
 
-adb shell ln -s /mnt/runtime/default/emulated/0 /sdcard
+
+
+## 🧱 Architecture:
+Currently its limited to 1 producer and 4 q each thread will consume from this q
+```
++-----------------+       +------------------+
+|   Producer(s)   | --->  |  Queue (Stream)  | ---> [Processor 1]
+| (dir scanners)  |       |  file paths      | ---> [Processor 2]
++-----------------+       +------------------+ ---> [Processor N]
+```
+
+
+### Set to test code locally
+```
+Linux : export PYTHONPATH=.
+WIN: set PYTHONPATH=.
+```
