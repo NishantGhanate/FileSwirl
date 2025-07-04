@@ -116,7 +116,7 @@ python -m file_sort.cli \
 ⚡ Copy from multiple folders in parallel mode
 ```bash
 python -m file_sort.cli \
-  --input_paths "E:\\src" "E:\\DCIM" \
+  --input_paths "E:\\src" "E:\\temp" \
   --output_path "E:\\dest" \
   --shift_type "copy" \
   --process_type "parallel
