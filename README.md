@@ -1,10 +1,10 @@
-# 📁 File sort
+# 📁 File swirl
 
-Now sort your files with just one command.
+Now Organizes files from chaos to order with just one command.
 Organize photos, videos, documents, and more — cleanly and efficiently — using flexible sorting rules.
 
 
-## ✨ Sorting Features
+## ✨ Organize Features
 - 📅 Sort by Date — Organize files into folders by creation or modified date.
 - 🧩 Filter by File Extension — Group files like .jpg, .mp4, .pdf, etc
 - 🏷️ Sort by Camera Make (EXIF.make) — Useful for photographers to group by device brand.
@@ -30,7 +30,7 @@ e.g Sort only `.mp4` files from `source` dir into `destination` dir
 
 ### Project setup
 ```
-- git clone https://github.com/NishantGhanate/FileSort.git
+- git clone https://github.com/NishantGhanate/FileSwirl.git
 - cd FileSort
 - python -m venv venv
 - [Win] > venv\Scripts\activate
@@ -57,17 +57,17 @@ For final build testing
 ## To build project locally
 ```bash
 > python -m build
-> pip install dist/file_sort-0.0.10-py3-none-any.whl
+> pip install dist/file_swirl-0.0.10-py3-none-any.whl
 ```
 
 ### HELP
 ```bash
-> python -m file_sort.cli -h
+> python -m file_swirl.cli -h
 ```
 
 ### Run cli: default command
 ```bash
-> python -m file_sort.cli --input_paths "E:\\src" --output_path "E:\\dest"
+> python -m file_swirl.cli --input_paths "E:\\src" --output_path "E:\\dest"
 ```
 
 ### Defaults Args for cli
@@ -90,7 +90,7 @@ For final build testing
 
 🔁 Move files from a source to a destination
 ```bash
-python -m file_sort.cli \
+python -m file_swirl.cli \
   --input_paths "E:\\src" \
   --output_path "E:\\dest" \
   --shift_type "move"
@@ -98,7 +98,7 @@ python -m file_sort.cli \
 
 🗃️ Move files and organize by nested folders: date file_extension
 ```bash
-python -m file_sort.cli \
+python -m file_swirl.cli \
   --input_paths "E:\\src" \
   --output_path "E:\\dest" \
   --shift_type "move" \
@@ -107,7 +107,7 @@ python -m file_sort.cli \
 
 🏷️ Organize files by camera make/brand
 ```bash
-python -m file_sort.cli \
+python -m file_swirl.cli \
   --input_paths "E:\\src" \
   --output_path "E:\\dest" \
   --nested_order make
@@ -115,7 +115,7 @@ python -m file_sort.cli \
 
 ⚡ Copy from multiple folders in parallel mode
 ```bash
-python -m file_sort.cli \
+python -m file_swirl.cli \
   --input_paths "E:\\src" "E:\\temp" \
   --output_path "E:\\dest" \
   --shift_type "copy" \

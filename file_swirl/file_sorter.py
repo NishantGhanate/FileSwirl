@@ -10,10 +10,10 @@ from queue import Empty, Full, Queue
 from threading import Event, Lock, Thread
 from typing import List, Optional
 
-from file_sort.file_structs import NestedOrder, ProcessType, ShiftType, WorkerStats
-from file_sort.logger import get_dict_logger
-from file_sort.meta_extract import MetaExtract
-from file_sort.utils import convert_size, get_category, get_date_subpath
+from file_swirl.file_structs import NestedOrder, ProcessType, ShiftType, WorkerStats
+from file_swirl.logger import get_dict_logger
+from file_swirl.meta_extract import MetaExtract
+from file_swirl.utils import convert_size, get_category, get_date_subpath
 
 logger = get_dict_logger(name= 'file_sorter')
 

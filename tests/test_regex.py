@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from file_sort.file_structs import FileDate
-from file_sort.meta_extract import MetaExtract
+from file_swirl.file_structs import FileDate
+from file_swirl.meta_extract import MetaExtract
 
 
 @pytest.mark.parametrize("filename,expected", [

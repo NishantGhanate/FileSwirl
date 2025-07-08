@@ -6,7 +6,7 @@ from pathlib import Path
 
 from dateutil import parser
 
-from file_sort.constants import FILE_EXTENSIONS
+from file_swirl.constants import FILE_EXTENSIONS
 
 
 class FileUpdate:
