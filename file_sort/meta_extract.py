@@ -87,7 +87,7 @@ class MetaExtract:
         In case meta data is not found use this function
         to extract file data from file name using regex
         """
-        filename = file_path.stem
+        filename = file_path.name
         regex_file_name_patterns = {
             rf".*?(\d{{4}})(\d{{2}})(\d{{2}}).*?\.({FILE_EXTENSIONS})$": (1, 2, 3),
             r"(IMG[_-]|IMG|PXL_)?(\d{4})(\d{2})(\d{2}).*?\.(jpg|jpeg|png|gif|heic|mov)" : (2,3,4),
@@ -95,7 +95,7 @@ class MetaExtract:
         }
 
         for pattern, group_indexs in regex_file_name_patterns.items():
-            match = re.match(pattern, filename, flags=re.IGNORECASE)
+            match = re.search(pattern, filename, flags=re.IGNORECASE)
             if match and is_valid_date(
                     year= match.group(group_indexs[0]),
                     month=match.group(group_indexs[1]),
