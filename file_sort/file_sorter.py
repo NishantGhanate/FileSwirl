@@ -4,15 +4,16 @@ docstring
 import os
 import shutil
 import traceback
+from itertools import chain
 from pathlib import Path
 from queue import Empty, Full, Queue
 from threading import Event, Lock, Thread
-from typing import List
+from typing import List, Optional
 
 from file_sort.file_structs import NestedOrder, ProcessType, ShiftType, WorkerStats
 from file_sort.logger import get_dict_logger
 from file_sort.meta_extract import MetaExtract
-from file_sort.utils import get_category, get_date_subpath
+from file_sort.utils import convert_size, get_category, get_date_subpath
 
 logger = get_dict_logger(name= 'file_sorter')
 
@@ -37,6 +38,7 @@ class FileSorter:
         """
 
         self.total_counter = 0
+        self.total_files_size = 0
         self.files_tracked = {}
         self.output_folder =  Path(output_folder)
         self.input_folders = input_folders
@@ -96,7 +98,7 @@ class FileSorter:
             result = "UNKNOWN"
         return result
 
-    def arrange_files(self, file_path: Path) -> bool:
+    def arrange_files(self, file_path: Path) -> Optional[Path]:
         """
         Re-arrange files accordinly
         """
@@ -106,22 +108,26 @@ class FileSorter:
                 self.get_sort_value(file_path, key, file_meta_data)
                 for key in self.nested_order
             ]
-            dest_path =  self.output_folder.joinpath(*subdirs)
+            dest_path = self.output_folder.joinpath(*subdirs)
+
             if self.dry_run:
+                dest_path = f"{dest_path}{os.sep}{file_path.name}"
                 print(f"[DRY-RUN] Would move: {file_path} → {dest_path}")
             else:
-                print(f"Processing: {dest_path}{os.sep}{file_path.name}")
                 dest_path.mkdir(parents=True, exist_ok=True)
-                self.shift_type(str(file_path), str(dest_path))
+                dest_path = f"{dest_path}{os.sep}{file_path.name}"
+                print(f"Processing: {dest_path}")
+                self.shift_type(str(file_path), dest_path)
+                self.total_files_size += os.path.getsize(dest_path)
 
             self.total_counter += 1
 
         except Exception as e:
             print(f"[Exception]  : {e}")
             traceback.print_exc()
-            return False
+            return None
 
-        return True
+        return Path(dest_path)
 
     @staticmethod
     def safe_scandir(path: str):
@@ -191,9 +197,10 @@ class FileSorter:
 
             try:
                 print(f"\n[Worker-{thread_id}] Processing: {file_path}")
-                self.arrange_files(file_path= Path(file_path))
+                dest = self.arrange_files(file_path= Path(file_path))
                 with lock:
                     stats.total_files_processed += 1
+                    stats.total_files_size += os.path.getsize(dest)
 
             except Exception as e:
                 print(f"[Worker-{thread_id}] ERROR: {file_path} → {e}")
@@ -210,9 +217,9 @@ class FileSorter:
         queue = Queue(maxsize=QUEUE_SIZE)
 
         # Start producer
-        generator = FileSorter.walk_iterative(
-            root_dir=str(paths[0]),
-            file_extensions=self.file_extensions
+        generator = chain.from_iterable(
+            FileSorter.walk_iterative(path, self.file_extensions)
+            for path in paths
         )
         producer = Thread(
             target=FileSorter.file_producer,
@@ -265,21 +272,25 @@ class FileSorter:
         print(f"\nTotal Files counted: {self.total_counter}")
 
         if not worker_stats:
+            print(f"\nTotal files size: {convert_size(size_bytes= self.total_files_size)}")
             return
 
-        total_files = 0
         total_time = 0
+        total_files = 0
+        total_files_size = 0
         for i, stat in enumerate(worker_stats):
             duration = stat.duration()
             tput = stat.throughput()
             total_files += stat.total_files_processed
             total_time = max(total_time, duration)
+            total_files_size += stat.total_files_size
             print(
                 f" - Worker-{i}: {stat.total_files_processed} files in {duration:.2f}s "
                 f"({tput:.2f} files/sec)"
             )
 
         print(f"\nTotal files processed: {total_files}")
+        print(f"\nTotal files size: {convert_size(size_bytes= total_files_size)}")
 
     def process_files(self, process_type: ProcessType):
         """
