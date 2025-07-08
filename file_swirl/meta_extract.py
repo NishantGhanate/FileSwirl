@@ -10,9 +10,9 @@ from typing import Optional
 
 import exifread
 
-from file_sort.constants import DATE_FIELDS, FILE_EXTENSIONS
-from file_sort.file_structs import FileDate
-from file_sort.utils import is_valid_date
+from file_swirl.constants import DATE_FIELDS, FILE_EXTENSIONS
+from file_swirl.file_structs import FileDate
+from file_swirl.utils import is_valid_date
 
 
 class MetaExtract:

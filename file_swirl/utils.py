@@ -8,7 +8,7 @@ from os import sep as file_sep
 from pathlib import Path
 from typing import Callable, Generator, Set
 
-from file_sort.constants import FILE_EXTENSIONS_MAP
+from file_swirl.constants import FILE_EXTENSIONS_MAP
 
 
 def memo_file(seen: Set = None):

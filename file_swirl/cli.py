@@ -2,9 +2,9 @@ import argparse
 import time
 from pathlib import Path
 
-from file_sort.constants import FILE_EXTENSIONS
-from file_sort.file_sorter import FileSorter
-from file_sort.file_structs import NestedOrder, ProcessType, ShiftType
+from file_swirl.constants import FILE_EXTENSIONS
+from file_swirl.file_sorter import FileSorter
+from file_swirl.file_structs import NestedOrder, ProcessType, ShiftType
 
 
 def main():

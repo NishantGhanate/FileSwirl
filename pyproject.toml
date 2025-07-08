@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "file_sort"
+name = "file_swirl"
 version = "0.0.10"
 description = "A fast, flexible file sorter and organizer"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-file-sort = "file_sort.cli:main"
+file-sort = "file_swirl.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

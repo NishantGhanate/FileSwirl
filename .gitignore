@@ -4,7 +4,7 @@ __pycache__
 *.cfg
 
 build
-file_sort.egg-info
+file_swirl.egg-info
 wip
 logs
 *.log
