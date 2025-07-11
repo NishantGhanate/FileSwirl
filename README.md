@@ -65,6 +65,11 @@ For final build testing
 > python -m file_swirl.cli -h
 ```
 
+## Run Gui
+```
+> python -m file_swirl.gui
+```
+
 ### Run cli: default command
 ```bash
 > python -m file_swirl.cli --input_paths "E:\\src" --output_path "E:\\dest"
