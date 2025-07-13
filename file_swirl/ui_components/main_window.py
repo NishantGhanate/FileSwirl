@@ -16,6 +16,7 @@ from file_swirl.file_structs import ProcessType, ShiftType
 from file_swirl.ui_components import (
     FileTreeComponent,
     ProgressComponent,
+    SettingsPanelComponent,
     SortLevelComponent,
 )
 from file_swirl.ui_components.file_add import FileAddComponent
@@ -36,6 +37,7 @@ class FolderSwirlUi(QMainWindow):
         self.sort_level_component = SortLevelComponent()
         self.file_tree_component = FileTreeComponent()
         self.progress_component = ProgressComponent()
+        self.settings_panel = SettingsPanelComponent(["Name", "Date", "Device", "Size", "Location", "Camera", "Type"])
 
         self.setup_ui()
 
@@ -78,13 +80,50 @@ class FolderSwirlUi(QMainWindow):
 
         main_layout.addLayout(content_layout)
 
-        # Optional: add a Start button here to test
-        # e.g., QPushButton("Start Swirl") connected to dummy slot
+        # Horizontal layout for Start and Settings buttons
+        button_row = QHBoxLayout()
+
+        # Start Button
         start_button = QPushButton("▶ Start Swirl")
         start_button.setStyleSheet(START_BUTTON_STYLE_PURPLE)
-        start_button.clicked.connect(self.run_file_swirl)  # Define this method
+        start_button.clicked.connect(self.run_file_swirl)
+        button_row.addWidget(start_button)
 
-        main_layout.addWidget(start_button, alignment=Qt.AlignmentFlag.AlignCenter)
+        # Add spacing between Start and Settings if desired
+        button_row.addSpacing(50)
+
+        # Settings Button
+        self.settings_button = QPushButton("⚙")
+        # self.settings_button.setStyleSheet("padding: 8px 16px;")
+        self.settings_button.setFixedSize(40, 40)  # Equal width and height
+        self.settings_button.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(130, 130, 130, 0.2);
+                color: white;
+                border: 2px solid rgba(180, 180, 180, 0.4);
+                border-radius: 20px;  /* Half of width/height for perfect circle */
+                font-size: 18px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: rgba(160, 160, 160, 0.3);
+                border-color: rgba(200, 200, 200, 0.5);
+            }
+            QPushButton:pressed {
+                background-color: rgba(100, 100, 100, 0.3);
+                border-color: rgba(150, 150, 150, 0.6);
+            }
+        """)
+        self.settings_button.clicked.connect(self.settings_panel.toggle)
+        button_row.addWidget(self.settings_button)
+
+        # Optional: Align the button group to center or right
+        button_row.addStretch()  # Push buttons to the left
+        # or use: button_row.setAlignment(Qt.AlignmentFlag.AlignRight) if you want both on right
+
+        # Add the row to main layout
+        main_layout.addLayout(button_row)
+
 
     def update_after_swirl(self):
         """

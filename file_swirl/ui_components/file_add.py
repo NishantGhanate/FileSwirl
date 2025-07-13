@@ -29,7 +29,7 @@ class FileAddComponent:
         self.folder_paths = set()
         self.folder_list = QListWidget()
         self.output_folder_path = ''
-        self.output_folder_label = QLineEdit("select a output folder")
+        self.output_folder_label = QLineEdit("Select a output folder")
         self.output_folder_label.setReadOnly(True)
         self.output_folder_label.setFixedHeight(35)
         self.output_folder_label.setStyleSheet("""
@@ -181,7 +181,7 @@ class FileAddComponent:
         if folder and folder not in self.folder_paths:
             self.folder_paths.add(folder)
             self.folder_list.addItem(folder)
-            self.folders_count.setText(f"selected: {len(self.folder_paths)}")
+            self.folders_count.setText(f"Selected: {len(self.folder_paths)}")
 
     def remove_selected_folder(self):
         for item in self.folder_list.selectedItems():
@@ -189,7 +189,7 @@ class FileAddComponent:
             if path in self.folder_paths:
                 self.folder_paths.remove(path)
             self.folder_list.takeItem(self.folder_list.row(item))
-        self.folders_count.setText(f"selected: {len(self.folder_paths)}  ")
+        self.folders_count.setText(f"Selected: {len(self.folder_paths)}  ")
 
     def select_output_folder(self):
         self.output_folder_path = QFileDialog.getExistingDirectory()
