@@ -381,3 +381,30 @@ KEY_BOX = """
         padding: 4px;
     }
 """
+
+CONSOLE_VIEW = """
+    QTextEdit {
+        background-color: #1e1e1e;
+        color: #dcdcdc;
+        font-family: Consolas, Courier New, monospace;
+        font-size: 14px;
+        border: 1px solid #444;
+        border-radius: 8px;       /* Rounded edges */
+        padding: 6px;
+    }
+    QScrollBar:vertical {
+        background: #2e2e2e;
+        width: 12px;
+        margin: 0px;
+        border-radius: 6px;
+    }
+    QScrollBar::handle:vertical {
+        background: #5a5a5a;
+        border-radius: 6px;
+        min-height: 20px;
+    }
+    QScrollBar::add-line:vertical,
+    QScrollBar::sub-line:vertical {
+        height: 0px;
+    }
+"""

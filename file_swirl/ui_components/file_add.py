@@ -41,7 +41,7 @@ class FileAddComponent:
                 border: none;
             }"""
         )
-        self.folders_count = QLineEdit("input folders: 0")
+        self.folders_count = QLineEdit("Input folders: 0")
         self.folders_count.setStyleSheet("""
             QLineEdit {
                 color: #9bb5ff;
@@ -61,7 +61,7 @@ class FileAddComponent:
 
         header = QHBoxLayout()
         header.setSpacing(10)  # Add consistent spacing
-        output_folder_button = QPushButton("📁 Swirl files to")
+        output_folder_button = QPushButton("📁 Swirl files")
         output_folder_button.setFixedHeight(35)
         output_folder_button.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         # output_folder_button.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -134,8 +134,8 @@ class FileAddComponent:
 
         # Header row
         header = QHBoxLayout()
-        output_folder_button = QPushButton("📁 Swirl files to")
-        output_folder_button.setFixedHeight(35)
+        output_folder_button = QPushButton("📁 Output folder")
+        output_folder_button.setFixedHeight(42)
         output_folder_button.setStyleSheet(ADD_BUTTON_STYLE_PURPLE)
         output_folder_button.clicked.connect(self.select_output_folder)
 

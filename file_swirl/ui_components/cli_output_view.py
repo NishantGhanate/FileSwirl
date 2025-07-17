@@ -1,7 +1,11 @@
-import sys
+"""
+Component for cli view
+"""
 
 from PyQt6.QtCore import QProcess
-from PyQt6.QtWidgets import QFrame, QPushButton, QTextEdit, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QFrame, QTextEdit, QVBoxLayout, QWidget
+
+from file_swirl.ui_components.styles import CONSOLE_VIEW
 
 
 class CLIOutputViewer(QWidget):
@@ -15,6 +19,7 @@ class CLIOutputViewer(QWidget):
 
 
         self.console = QTextEdit()
+        self.console.setStyleSheet(CONSOLE_VIEW)
         self.console.setReadOnly(True)
 
         self.process = QProcess(self)

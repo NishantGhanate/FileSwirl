@@ -1,5 +1,6 @@
 import sys
 
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication
 
 from file_swirl.ui_components.main_window import FolderSwirlUi
@@ -15,6 +16,7 @@ def main():
     app.setStyle('Fusion')
 
     window = FolderSwirlUi()
+    window.setWindowIcon(QIcon("assets/app_icon.png"))
     window.show()
 
     sys.exit(app.exec())
