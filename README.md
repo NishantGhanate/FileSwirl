@@ -7,8 +7,7 @@
 
 Now Organizes files from chaos to order with just one command.
 Organize photos, videos, documents, and more — cleanly and efficiently — using flexible sorting rules.
-
-
+Can easily process 100 GB +
 
 ## ✨ Organize Features
 - 📅 Sort by Date — Organize files into folders by creation or modified date.
@@ -40,7 +39,7 @@ e.g Sort only `.mp4` files from `source` dir into `destination` dir
 
 ### 📸 Screenshot
 
-![FileSwirl UI](assets/screenshot.png)
+![FileSwirl UI](assets/Screenshot.png)
 
 ## Run Gui *
 ```
@@ -157,10 +156,11 @@ Currently its limited to 1 producer and 4 q each thread will consume from this q
 +-----------------+       +------------------+ ---> [Processor N]
 ```
 
-
 ### Set to test code locally
 ```
 Linux : export PYTHONPATH=.
 WIN: set PYTHONPATH=.
 ```
 
+📌 [Project Roadmap](RoadMap.md)
+- See the full RoadMap for upcoming features and ideas.

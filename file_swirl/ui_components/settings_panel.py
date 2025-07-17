@@ -1,4 +1,4 @@
-from typing import List
+
 
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
 
@@ -7,6 +7,7 @@ from file_swirl.ui_components.drop_down import MultiSelectComboBox
 
 
 class SettingsPanelComponent(QFrame):
+
     def __init__(self, multi_select_items: list[str]):
         super().__init__()
         self.setStyleSheet("""
