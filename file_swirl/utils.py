@@ -2,6 +2,7 @@
 Store utils methods
 """
 import math
+import os
 from datetime import datetime
 from functools import wraps
 from os import sep as file_sep
@@ -49,6 +50,15 @@ def convert_size(size_bytes: int) -> str:
     s = round(size_bytes / p, 2)
     return f"{s} {size_name[i]}"
 
+def get_folder_size(folder_path: str) -> int:
+    total = 0
+    for root, dirs, files in os.walk(folder_path):
+        for f in files:
+            fp = os.path.join(root, f)
+            if os.path.isfile(fp):
+                total += os.path.getsize(fp)
+    return total
+
 def get_date_subpath(creation_date: datetime, sep: str = file_sep) -> str:
     """
     Returns a subpath string like 'YYYY/MM/DD' based on the given datetime object.
@@ -68,3 +78,11 @@ def get_category(extension: str) -> str:
             return category
     return 'NEW'
 
+def categorize_file(file_path: str) -> str:
+    ext = Path(file_path).suffix.lower()
+    if ext in [".jpg", ".jpeg", ".png", ".gif", ".bmp"]:
+        return "Photos"
+    elif ext in [".pdf", ".docx", ".txt", ".ppt", ".xls"]:
+        return "Docs"
+    else:
+        return "Other"

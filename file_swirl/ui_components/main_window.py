@@ -1,6 +1,8 @@
 """
 Main code where it calls cli code
 """
+import sys
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QHBoxLayout,
@@ -11,9 +13,10 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from file_swirl.constants import FILE_EXTENSIONS
 from file_swirl.file_sorter import FileSorter
-from file_swirl.file_structs import ProcessType, ShiftType
 from file_swirl.ui_components import (
+    CLIOutputViewer,
     FileTreeComponent,
     ProgressComponent,
     SettingsPanelComponent,
@@ -37,7 +40,8 @@ class FolderSwirlUi(QMainWindow):
         self.sort_level_component = SortLevelComponent()
         self.file_tree_component = FileTreeComponent()
         self.progress_component = ProgressComponent()
-        self.settings_panel = SettingsPanelComponent(["Name", "Date", "Device", "Size", "Location", "Camera", "Type"])
+        self.settings_panel = SettingsPanelComponent(multi_select_items=sorted(FILE_EXTENSIONS))
+        self.console_view = CLIOutputViewer()
 
         self.setup_ui()
 
@@ -75,7 +79,8 @@ class FolderSwirlUi(QMainWindow):
         right_column = QVBoxLayout()
         right_column.setSpacing(20)
         right_column.addWidget(self.file_tree_component.build())
-        right_column.addWidget(self.progress_component.build())
+        # right_column.addWidget(self.progress_component.build())
+        right_column.addWidget(self.console_view.build())
         content_layout.addLayout(right_column, 2)
 
         main_layout.addLayout(content_layout)
@@ -84,10 +89,10 @@ class FolderSwirlUi(QMainWindow):
         button_row = QHBoxLayout()
 
         # Start Button
-        start_button = QPushButton("▶ Start Swirl")
-        start_button.setStyleSheet(START_BUTTON_STYLE_PURPLE)
-        start_button.clicked.connect(self.run_file_swirl)
-        button_row.addWidget(start_button)
+        self.start_button = QPushButton("▶ Start Swirl")
+        self.start_button.setStyleSheet(START_BUTTON_STYLE_PURPLE)
+        self.start_button.clicked.connect(self.run_file_swirl)
+        button_row.addWidget(self.start_button)
 
         # Add spacing between Start and Settings if desired
         button_row.addSpacing(50)
@@ -129,12 +134,10 @@ class FolderSwirlUi(QMainWindow):
         """
         Example method you can call after file swirl starts
         """
-        self.progress_component.update_status("Swirl started...")
-        self.progress_component.update_progress(0)
         self.file_tree_component.populate_tree(self.file_add_component.folder_paths)
 
     def reset_ui(self):
-        self.progress_component.reset()
+        self.console_view.clear()
         self.file_tree_component.clear_tree()
 
 
@@ -145,30 +148,35 @@ class FolderSwirlUi(QMainWindow):
         """
 
         # prepare cli
-        print(self.file_add_component.folder_paths)
-        print(self.file_add_component.output_folder_path)
-        print(self.sort_level_component.selected_items)
+        self.start_button.setEnabled(False)
 
-        # file_sorter = FileSorter(
-        #     input_folders=args.input_paths,
-        #     output_folder=args.output_path,
-        #     shift_type= args.shift_type,
-        #     file_extensions= args.file_extensions,
-        #     location=args.location,
-        #     nested_order=args.nested_order,
-        #     dry_run=True
-        # )
-        # file_sorter.process_files(
-        #     process_type=ProcessType(args.process_type)
-        # )
+        args = [
+            "-m", "file_swirl.cli",
+            "--input_paths", *self.file_add_component.folder_paths,
+            "--output_path", self.file_add_component.output_folder_path,
+        ]
+        if self.sort_level_component.selected_items:
+            args += ['--nested_order', *self.sort_level_component.selected_items]
 
 
-        self.progress_component.reset()
-        self.progress_component.update_status("Swirling started...")
-        self.progress_component.update_progress(25)
+        if self.settings_panel.parallel_toggle.isChecked():
+            args += ['--process_type', 'parallel']
+
+        # Shift Type
+        shift_type = self.settings_panel.shift_toggle.isChecked() # e.g., "copy", "move"
+        if shift_type:
+            args += ['--shift_type', "move"]
+
+        if self.settings_panel.dry_run_toggle.isChecked():
+            args += ['--dry_run', "True"]
+
+        items = self.settings_panel.multi_select.selected_items()
+        print(items)
+        if items:
+            print(items)
+
+        self.console_view.process.start(sys.executable, args)
 
         # Simulate tree output
         self.file_tree_component.populate_tree(self.file_add_component.folder_paths)
-
-        self.progress_component.update_progress(100)
-        self.progress_component.update_status("Swirl complete!")
+        self.start_button.setEnabled(True)

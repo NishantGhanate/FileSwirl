@@ -57,9 +57,6 @@ def main():
     args = args_parser.parse_args()
     print("Nested Order received:", args.nested_order)
 
-    output_path_check = Path(args.output_path)
-    output_path_check.mkdir(parents=True, exist_ok=True)
-
     start_time = time.time()
 
     # Call the process_file function with the provided paths

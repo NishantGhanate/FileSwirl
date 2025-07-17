@@ -55,6 +55,9 @@ class FileSorter:
         self.nested_order = nested_order
         self.dry_run = dry_run
 
+        output_path_check = Path(self.output_folder)
+        output_path_check.mkdir(parents=True, exist_ok=True)
+
 
     def get_sort_value(self, file_path: Path, key: str, file_meta_data: dict) -> str:
         """
