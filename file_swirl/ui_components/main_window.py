@@ -14,7 +14,6 @@ from PyQt6.QtWidgets import (
 )
 
 from file_swirl.constants import FILE_EXTENSIONS
-from file_swirl.file_sorter import FileSorter
 from file_swirl.ui_components import (
     CLIOutputViewer,
     FileTreeComponent,
@@ -133,12 +132,12 @@ class FolderSwirlUi(QMainWindow):
 
 
 
-    def reset_ui(self):
+    def reset_ui(self) -> None:
         self.console_view.console.clear()
         self.file_tree_component.clear_tree()
 
     @pyqtSlot()
-    def on_tree_updated(self):
+    def on_tree_updated(self) -> None:
         print("Tree completed")
         total_size_bytes = sum(self.file_tree_component.top_folder_sizes.values())
         item = self.file_tree_component.tree_widget.topLevelItem(0)

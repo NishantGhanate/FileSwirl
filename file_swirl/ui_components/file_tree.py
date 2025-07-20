@@ -73,7 +73,7 @@ class FileTreeComponent(QObject):
         print(f"Total size for {folder_path}: {total_size} bytes\n")
         return total_size
 
-    def clear_tree(self):
+    def clear_tree(self) -> None:
         self.pending_top_folders = set()
         self.top_folder_sizes = {}
         self.total_root_size = 0
@@ -116,13 +116,12 @@ class FileTreeComponent(QObject):
 
         self.tree_widget.expandAll()
 
-
-    def _start_size_worker(self, folder_path):
+    def _start_size_worker(self, folder_path: Path):
         worker = FolderSizeWorker(folder_path)
         worker.signals.result.connect(self._update_folder_size)
         self.thread_pool.start(worker)
 
-    def _update_folder_size(self, folder_path, size_bytes):
+    def _update_folder_size(self, folder_path: Path, size_bytes: int):
         normalized = os.path.normpath(folder_path)
         item = self.item_map.get(normalized)
         if item:
@@ -146,6 +145,6 @@ class FolderSizeWorker(QRunnable):
         self.signals = FolderSizeWorkerSignals()
 
     @pyqtSlot()
-    def run(self):
+    def run(self) -> None:
         size = FileTreeComponent.get_folder_size_limited(self.folder_path, depth=1)
         self.signals.result.emit(self.folder_path, size)
