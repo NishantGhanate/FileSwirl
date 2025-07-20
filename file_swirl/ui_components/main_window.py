@@ -3,7 +3,7 @@ Main code where it calls cli code
 """
 import sys
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSlot
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -27,6 +27,7 @@ from file_swirl.ui_components.styles import (
     MAIN_WINDOW_PURPLE,
     START_BUTTON_STYLE_PURPLE,
 )
+from file_swirl.utils import convert_size
 
 
 class FolderSwirlUi(QMainWindow):
@@ -39,6 +40,7 @@ class FolderSwirlUi(QMainWindow):
         self.file_add_component = FileAddComponent()
         self.sort_level_component = SortLevelComponent()
         self.file_tree_component = FileTreeComponent()
+        self.file_tree_component.tree_updated.connect(self.on_tree_updated)
         self.progress_component = ProgressComponent()
         self.settings_panel = SettingsPanelComponent(multi_select_items=sorted(FILE_EXTENSIONS))
         self.console_view = CLIOutputViewer()
@@ -130,16 +132,17 @@ class FolderSwirlUi(QMainWindow):
         main_layout.addLayout(button_row)
 
 
-    def update_after_swirl(self):
-        """
-        Example method you can call after file swirl starts
-        """
-        self.file_tree_component.populate_tree(self.file_add_component.folder_paths)
 
     def reset_ui(self):
-        self.console_view.clear()
+        self.console_view.console.clear()
         self.file_tree_component.clear_tree()
 
+    @pyqtSlot()
+    def on_tree_updated(self):
+        print("Tree completed")
+        total_size_bytes = sum(self.file_tree_component.top_folder_sizes.values())
+        item = self.file_tree_component.tree_widget.topLevelItem(0)
+        item.setText(1, convert_size(total_size_bytes))
 
     def run_file_swirl(self):
         """
@@ -148,6 +151,7 @@ class FolderSwirlUi(QMainWindow):
         """
 
         # prepare cli
+        self.reset_ui()
         self.start_button.setEnabled(False)
 
         args = [
@@ -171,12 +175,11 @@ class FolderSwirlUi(QMainWindow):
             args += ['--dry_run', "True"]
 
         items = self.settings_panel.multi_select.selected_items()
-        print(items)
         if items:
-            print(items)
+            args += ['--file_extensions', *items]
 
         self.console_view.process.start(sys.executable, args)
 
         # Simulate tree output
-        self.file_tree_component.populate_tree(self.file_add_component.folder_paths)
+        self.file_tree_component.populate_tree(folder_paths=[self.file_add_component.output_folder_path])
         self.start_button.setEnabled(True)
