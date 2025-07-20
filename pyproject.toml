@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "file-swirl"
-version = "0.0.11"  # ← Bump this on each release
+version = "0.1.0"  # ← Bump this on each release
 description = "A fast, flexible file sorter and organizer"
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [

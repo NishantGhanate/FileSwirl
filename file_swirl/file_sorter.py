@@ -8,7 +8,7 @@ from itertools import chain
 from pathlib import Path
 from queue import Empty, Full, Queue
 from threading import Event, Lock, Thread
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 from file_swirl.file_structs import NestedOrder, ProcessType, ShiftType, WorkerStats
 from file_swirl.logger import get_dict_logger
@@ -54,6 +54,9 @@ class FileSorter:
         self.location = location
         self.nested_order = nested_order
         self.dry_run = dry_run
+
+        output_path_check = Path(self.output_folder)
+        output_path_check.mkdir(parents=True, exist_ok=True)
 
 
     def get_sort_value(self, file_path: Path, key: str, file_meta_data: dict) -> str:
@@ -142,7 +145,7 @@ class FileSorter:
             print(f"[WARN] Skipped {path}: {e}")
 
     @staticmethod
-    def walk_iterative(root_dir, file_extensions):
+    def walk_iterative(root_dir: Path, file_extensions: set) -> Generator:
         """
         Memory-efficient and stack-safe replacement for os.walk
         """
@@ -158,7 +161,7 @@ class FileSorter:
                         yield entry.path
 
     @staticmethod
-    def file_producer(generator, queue: Queue, stop_event: Event):
+    def file_producer(generator, queue: Queue, stop_event: Event) -> None:
         """
         Streams file paths from generator into the queue.
         Bounded queue prevents overfilling.
@@ -181,7 +184,7 @@ class FileSorter:
     def file_worker(
         self, thread_id: int, queue: Queue,
         stop_event: Event, stats: WorkerStats, lock: Lock
-    ):
+    ) -> None:
         """
         Processes file paths from the queue.
         """

@@ -1,0 +1,64 @@
+[MASTER]
+# A comma-separated list of package or module names from where C extensions may be loaded.
+extension-pkg-whitelist=PyQt6
+
+# Python code to analyze
+ignore=venv,build,dist,.eggs,.git,__pycache__
+
+# Allow loading of arbitrary C extensions (needed for PyQt)
+unsafe-load-any-extension=yes
+
+[MESSAGES CONTROL]
+# Disable some PyQt6-specific false positives
+disable=
+    no-name-in-module,
+    no-member,
+    import-error,
+    missing-docstring,
+    too-few-public-methods,
+    too-many-arguments,
+    too-many-instance-attributes,
+    too-many-locals,
+    too-many-branches,
+    too-many-statements,
+    too-many-lines,
+    duplicate-code,
+    R0801,  # similar lines in multiple functions
+    C0116,  # missing-function-docstring
+    C0115,  # missing-class-docstring
+    C0114,  # missing-module-docstring
+
+[TYPECHECK]
+# Help pylint recognize dynamic PyQt modules
+ignored-modules=PyQt6
+ignored-classes=PyQt6.QtCore.QObject, PyQt6.QtWidgets.QWidget
+
+[FORMAT]
+# Set max line length to something more realistic for GUI code
+max-line-length=120
+
+[DESIGN]
+# Increase default limits for PyQt UIs and larger functions
+max-args=10
+max-locals=25
+max-returns=10
+max-branches=20
+max-statements=50
+max-attributes=15
+
+[REPORTS]
+# Don't output the full report (only errors/warnings)
+reports=no
+output-format=colorized
+score=no
+
+[LOGGING]
+logging-modules=logging
+
+[VARIABLES]
+# Ignore unused-argument for Qt callbacks like `def event(self, _event):`
+ignored-argument-names=_.*|unused_.*
+
+[SIMILARITIES]
+# Minimum lines of a duplicated code block to report
+min-similarity-lines=8

@@ -1,8 +1,13 @@
+
+![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)
+[![PyPI](https://img.shields.io/pypi/v/file-swirl?color=brightgreen&logo=pypi)](https://pypi.org/project/file-swirl/)
+[![Downloads](https://img.shields.io/pypi/dm/file-swirl?label=Downloads&logo=pypi&color=blue)](https://pypi.org/project/file-swirl/)
+
 # 📁 File swirl
 
 Now Organizes files from chaos to order with just one command.
 Organize photos, videos, documents, and more — cleanly and efficiently — using flexible sorting rules.
-
+Can easily process 100 GB +
 
 ## ✨ Organize Features
 - 📅 Sort by Date — Organize files into folders by creation or modified date.
@@ -20,18 +25,33 @@ Also supports to arranges file in nested folder structure like `Output/Data/Make
 This scripts lets you filter out specific file extensions while sorting.
 e.g Sort only `.mp4` files from `source` dir into `destination` dir
 
+
+
 ### System requriments.
 - `Python3.10+`
 - `ExifTool`
 
 ### ✅ Supports
 - Windows 11 x64
+- Linux Ubuntu
+- Cli & Gui
+
+
+### 📸 Screenshot
+
+![FileSwirl UI](assets/Screenshot.png)
+
+## Run Gui *
+```
+> python -m file_swirl.gui
+```
+
 
 
 ### Project setup
 ```
 - git clone https://github.com/NishantGhanate/FileSwirl.git
-- cd FileSort
+- cd FileSwirl
 - python -m venv venv
 - [Win] > venv\Scripts\activate
 - [Linux] $ venv/bin/activate
@@ -52,7 +72,8 @@ For development
 For final build testing
 > python -m pip install .
 ```
-
+[Pypi Installer](https://pypi.org/project/file-swirl/):
+> pip install file-swirl
 
 ## To build project locally
 ```bash
@@ -64,6 +85,7 @@ For final build testing
 ```bash
 > python -m file_swirl.cli -h
 ```
+
 
 ### Run cli: default command
 ```bash
@@ -134,9 +156,11 @@ Currently its limited to 1 producer and 4 q each thread will consume from this q
 +-----------------+       +------------------+ ---> [Processor N]
 ```
 
-
 ### Set to test code locally
 ```
 Linux : export PYTHONPATH=.
 WIN: set PYTHONPATH=.
 ```
+
+📌 [Project Roadmap](RoadMap.md)
+- See the full RoadMap for upcoming features and ideas.
